@@ -8,13 +8,10 @@ const input = fs.readFileSync('./1/input.txt')
 const fuelRequired = (mass) => Math.floor(mass / 3) - 2;
 
 const fuelRequiredWithFuel = (mass) => {
-  const initialFuelRequired = fuelRequired(mass);
-
-  const totalFuel = (m) => {
-    if (fuelRequired(m) <= 0) return m;
-    return m + totalFuel(fuelRequired(m));
-  };
-  return totalFuel(initialFuelRequired);
+  const fuelReq = fuelRequired(mass);
+  return fuelReq > 0
+    ? fuelReq + fuelRequiredWithFuel(fuelReq)
+    : 0;
 };
 
 if (process.env.NODE_ENV !== 'test') {
