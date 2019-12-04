@@ -38,9 +38,9 @@ test('closestIntersectionSteps is calculated properly', () => {
   expect(closestIntersectionSteps(input2)).toBe(610);
 
 
-  // const input3 = {
-  //   wire1: ['R98', 'U47', 'R26', 'D63', 'R33', 'U87', 'L62', 'D20', 'R33', 'U53', 'R51'],
-  //   wire2: ['U98', 'R91', 'D20', 'R16', 'D67', 'R40', 'U7', 'R15', 'U6', 'R7'],
-  // };
-  // expect(closestIntersectionSteps(input3)).toBe(410);
+  const input3 = {
+    wire1: ['R98', 'U47', 'R26', 'D63', 'R33', 'U87', 'L62', 'D20', 'R33', 'U53', 'R51'],
+    wire2: ['U98', 'R91', 'D20', 'R16', 'D67', 'R40', 'U7', 'R15', 'U6', 'R7'],
+  };
+  expect(closestIntersectionSteps(input3)).toBe(410);
 });
