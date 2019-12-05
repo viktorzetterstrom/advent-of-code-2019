@@ -19,6 +19,7 @@
         "no-console": "off",
         "max-len": "off",
         "no-param-reassign": "off",
-        "no-constant-condition": "off"
+        "no-constant-condition": "off",
+        "no-plusplus": "off"
     }
 }
