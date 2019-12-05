@@ -11,6 +11,12 @@ class IntcodeComputer {
     return this.intcodes[this.iPointer++];
   }
 
+  getValue(mode) {
+    return mode === 1
+      ? this.getNextIntcode()
+      : this.intcodes[this.getNextIntcode()];
+  }
+
   run() {
     while (this.iPointer < this.intcodes.length - 1) {
       const next = this.getNextIntcode();
@@ -43,18 +49,18 @@ class IntcodeComputer {
   }
 
   doAddition(mode1, mode2) {
-    const addend1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const addend2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     const pos = this.getNextIntcode();
 
-    this.intcodes[pos] = addend1 + addend2;
+    this.intcodes[pos] = value1 + value2;
   }
 
   doMultiplication(mode1, mode2) {
-    const factor1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const factor2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     const pos = this.getNextIntcode();
-    this.intcodes[pos] = factor1 * factor2;
+    this.intcodes[pos] = value1 * value2;
   }
 
   doMove() {
@@ -63,33 +69,33 @@ class IntcodeComputer {
   }
 
   writeToOutput(mode) {
-    const value = mode === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value = this.getValue(mode);
     this.output.push(value);
   }
 
   jumpIfTrue(mode1, mode2) {
-    const value1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const value2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     if (value1 !== 0) this.iPointer = value2;
   }
 
   jumpIfFalse(mode1, mode2) {
-    const value1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const value2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     if (value1 === 0) this.iPointer = value2;
   }
 
   lessThan(mode1, mode2) {
-    const value1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const value2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     const pos = this.getNextIntcode();
     if (value1 < value2) this.intcodes[pos] = 1;
     else this.intcodes[pos] = 0;
   }
 
   equals(mode1, mode2) {
-    const value1 = mode1 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
-    const value2 = mode2 === 1 ? this.getNextIntcode() : this.intcodes[this.getNextIntcode()];
+    const value1 = this.getValue(mode1);
+    const value2 = this.getValue(mode2);
     const pos = this.getNextIntcode();
     if (value1 === value2) this.intcodes[pos] = 1;
     else this.intcodes[pos] = 0;
