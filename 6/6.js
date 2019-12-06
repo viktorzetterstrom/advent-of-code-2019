@@ -3,18 +3,33 @@ const fs = require('fs');
 const countOrbits = (orbitPairs) => {
   let orbits = 0;
   orbitPairs.forEach(({ parent }) => {
-    orbits++; // Direct connection
-    while (parent !== 'COM') { // Indirect connections
+    orbits++;
+    while (parent !== 'COM') {
       orbits++;
-      const newParent = orbitPairs.find(({ name }) => name === parent);
-      parent = newParent.parent;
+      parent = orbitPairs.find(({ name }) => name === parent).parent;
     }
   });
   return orbits;
 };
 
 const orbitsToSanta = (orbitPairs) => {
-  
+  const comPath = {};
+  orbitPairs.forEach(({ parent, name }) => {
+    const path = [parent];
+    while (parent !== 'COM') {
+      parent = orbitPairs.find(({ name }) => name === parent).parent;
+      path.push(parent);
+    }
+    comPath[name] = path;
+  });
+
+
+  const youToSanPath = [
+    ...comPath.YOU.filter((val) => !comPath.SAN.includes(val)),
+    ...comPath.SAN.filter((val) => !comPath.YOU.includes(val)),
+  ];
+
+  return youToSanPath.length;
 };
 
 if (process.env.NODE_ENV !== 'test') {
