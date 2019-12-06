@@ -17,7 +17,7 @@ const orbitsToSanta = (orbitPairs) => {
   orbitPairs.forEach(({ parent, name }) => {
     const path = [parent];
     while (parent !== 'COM') {
-      parent = orbitPairs.find(({ name }) => name === parent).parent;
+      parent = orbitPairs.find((pair) => pair.name === parent).parent;
       path.push(parent);
     }
     comPath[name] = path;
