@@ -1,14 +1,10 @@
 
 class IntcodeComputer {
-  constructor(intcodes, phase) {
+  constructor(intcodes, startingInput = []) {
     this.intcodes = [...intcodes];
-    this.phase = phase;
-    this.input = phase !== undefined
-      ? [phase]
-      : [];
+    this.input = startingInput;
     this.instructionPointer = 0;
     this.output = [];
-    this.nextIntcode = false;
   }
 
   getNextIntcode() {
@@ -37,7 +33,7 @@ class IntcodeComputer {
       this.nextIntcode = this.getNextIntcode();
       if (this.nextIntcode === 99) return this.exit(99);
 
-      const [opcode, , mode1 = 0, mode2 = 0, mode3 = 0] = Array.from(String(this.nextIntcode), Number).reverse();
+      const [opcode, , mode1 = 0, mode2 = 0] = Array.from(String(this.nextIntcode), Number).reverse();
       switch (opcode) {
         case 1: this.doAddition(mode1, mode2); break;
         case 2: this.doMultiplication(mode1, mode2); break;

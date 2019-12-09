@@ -1,5 +1,5 @@
 const fs = require('fs');
-const IntcodeComputer = require('./IntcodeCom2');
+const IntcodeComputer = require('./IntcodeComputer2');
 
 const getAllPhaserSettings = (string) => {
   const results = [];
@@ -35,11 +35,11 @@ const maxThrusterSignal = (intcodes) => getAllPhaserSettings('01234')
   ), 0);
 
 const calculateThrusterSignalWithLoop = (intcodes, [A, B, C, D, E]) => {
-  const ampA = new IntcodeComputer(intcodes, A);
-  const ampB = new IntcodeComputer(intcodes, B);
-  const ampC = new IntcodeComputer(intcodes, C);
-  const ampD = new IntcodeComputer(intcodes, D);
-  const ampE = new IntcodeComputer(intcodes, E);
+  const ampA = new IntcodeComputer(intcodes, [A]);
+  const ampB = new IntcodeComputer(intcodes, [B]);
+  const ampC = new IntcodeComputer(intcodes, [C]);
+  const ampD = new IntcodeComputer(intcodes, [D]);
+  const ampE = new IntcodeComputer(intcodes, [E]);
 
   let io = { out: [0] };
   while (true) {

@@ -1,5 +1,5 @@
 const { maxThrusterSignal, maxThrusterSignalWithLoop } = require('./7');
-const IntcodeComputer = require('./IntcodeCom2');
+const IntcodeComputer = require('./IntcodeComputer2');
 
 test('works for part 1 testcase in description', () => {
   expect(new IntcodeComputer([3, 0, 4, 0, 99]).run([1]).out).toStrictEqual([1]);
