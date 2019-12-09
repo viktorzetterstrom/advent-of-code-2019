@@ -3,6 +3,7 @@ const {
   layerChecksum,
   combineRows,
   verifyImage,
+  renderImage,
 } = require('./8');
 
 test('layerZeros', () => {
@@ -27,5 +28,5 @@ test('combineRows', () => {
 
 test('part 2 testcase', () => {
   const test = '0222112222120000';
-  expect(verifyImage(test, 2, 2)).toStrictEqual([[0, 1], [1, 0]]);
+  expect(renderImage(test, 2, 2)).toStrictEqual('⬛️ ⬜️ \n⬜️ ⬛️ ');
 });
