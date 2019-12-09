@@ -1,5 +1,5 @@
 const fs = require('fs');
-const IntcodeAmp = require('./IntcodeAmp');
+const IntcodeComputer = require('./IntcodeCom2');
 
 const getAllPhaserSettings = (string) => {
   const results = [];
@@ -20,11 +20,11 @@ const getAllPhaserSettings = (string) => {
 };
 
 const calculateThrusterSignal = (intcodes, [A, B, C, D, E]) => {
-  const ampA = new IntcodeAmp(intcodes, 0, A).run();
-  const ampB = new IntcodeAmp(intcodes, ampA.out[0], B).run();
-  const ampC = new IntcodeAmp(intcodes, ampB.out[0], C).run();
-  const ampD = new IntcodeAmp(intcodes, ampC.out[0], D).run();
-  const ampE = new IntcodeAmp(intcodes, ampD.out[0], E).run();
+  const ampA = new IntcodeComputer(intcodes).run([A, 0]);
+  const ampB = new IntcodeComputer(intcodes).run([B, ampA.out.pop()]);
+  const ampC = new IntcodeComputer(intcodes).run([C, ampB.out.pop()]);
+  const ampD = new IntcodeComputer(intcodes).run([D, ampC.out.pop()]);
+  const ampE = new IntcodeComputer(intcodes).run([E, ampD.out.pop()]);
   return ampE.out;
 };
 
@@ -35,15 +35,25 @@ const maxThrusterSignal = (intcodes) => getAllPhaserSettings('01234')
   ), 0);
 
 const calculateThrusterSignalWithLoop = (intcodes, [A, B, C, D, E]) => {
-  const ampA = new IntcodeAmp(intcodes, 0, A).run();
-  const ampB = new IntcodeAmp(intcodes, ampA.out[0], B).run();
-  const ampC = new IntcodeAmp(intcodes, ampB.out[0], C).run();
-  const ampD = new IntcodeAmp(intcodes, ampC.out[0], D).run();
-  const ampE = new IntcodeAmp(intcodes, ampD.out[0], E).run();
-  return ampE.out;
+  const ampA = new IntcodeComputer(intcodes, A);
+  const ampB = new IntcodeComputer(intcodes, B);
+  const ampC = new IntcodeComputer(intcodes, C);
+  const ampD = new IntcodeComputer(intcodes, D);
+  const ampE = new IntcodeComputer(intcodes, E);
+
+  let io = { out: [0] };
+  while (true) {
+    io = ampA.run(io.out);
+    io = ampB.run(io.out);
+    io = ampC.run(io.out);
+    io = ampD.run(io.out);
+    io = ampE.run(io.out);
+    if (io.exit === 99) break;
+  }
+  return io.out;
 };
 
-const maxThrusterSignalWithLoop = (intcodes) => getAllPhaserSettings('01234')
+const maxThrusterSignalWithLoop = (intcodes) => getAllPhaserSettings('56789')
   .reduce((max, phaserSetting) => Math.max(
     calculateThrusterSignalWithLoop(intcodes, [...phaserSetting].map(Number)),
     max,
@@ -55,9 +65,8 @@ if (process.env.NODE_ENV !== 'test') {
     .split(',')
     .map(Number);
 
-  console.log(
-    'part 1:', maxThrusterSignal(input),
-  );
+  console.log('part 1:', maxThrusterSignal(input));
+  console.log('part 2:', maxThrusterSignalWithLoop(input));
 }
 
 module.exports = {
