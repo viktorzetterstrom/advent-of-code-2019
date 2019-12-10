@@ -7,6 +7,6 @@ if (process.env.NODE_ENV !== 'test') {
     .toString()
     .split(',')
     .map(Number);
-  console.log(new IntcodeComputer(input).run([1]));
-  console.log('part 2:');
+  console.log('part 1:', new IntcodeComputer(input).run([1]).out);
+  console.log('part 2:', new IntcodeComputer(input).run([2]).out);
 }

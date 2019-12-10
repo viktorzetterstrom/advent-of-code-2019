@@ -21,15 +21,18 @@ class IntcodeComputer {
     }
   }
 
+  getPos(mode) {
+    return mode === 2
+      ? this.getNextIntcode() + this.relativeBase
+      : this.getNextIntcode();
+  }
+
   exit(code) {
     const out = this.output;
     this.output = [];
     return {
       exit: code,
       out,
-      rb: this.relativeBase,
-      ip: this.instructionPointer,
-      val: this.intcodes[this.instructionPointer],
     };
   }
 
@@ -40,22 +43,22 @@ class IntcodeComputer {
       this.nextIntcode = this.getNextIntcode();
       if (this.nextIntcode === 99) return this.exit(99);
 
-      const [opcode, , mode1 = 0, mode2 = 0] = Array.from(String(this.nextIntcode), Number).reverse();
+      const [opcode, , mode1 = 0, mode2 = 0, mode3 = 0] = Array.from(String(this.nextIntcode), Number).reverse();
       switch (opcode) {
-        case 1: this.doAddition(mode1, mode2); break;
-        case 2: this.doMultiplication(mode1, mode2); break;
+        case 1: this.doAddition(mode1, mode2, mode3); break;
+        case 2: this.doMultiplication(mode1, mode2, mode3); break;
         case 3: {
           if (this.input.length === 0) {
             this.instructionPointer--;
             return this.exit(3);
           }
-          this.handleInput(); break;
+          this.handleInput(mode1); break;
         }
         case 4: this.writeToOutput(mode1); break;
         case 5: this.jumpIfTrue(mode1, mode2); break;
         case 6: this.jumpIfFalse(mode1, mode2); break;
-        case 7: this.lessThan(mode1, mode2); break;
-        case 8: this.equals(mode1, mode2); break;
+        case 7: this.lessThan(mode1, mode2, mode3); break;
+        case 8: this.equals(mode1, mode2, mode3); break;
         case 9: this.adjustRelativeBase(mode1); break;
         default: throw new Error(`bad opcode ${opcode} at ${this.instructionPointer}`);
       }
@@ -64,23 +67,23 @@ class IntcodeComputer {
     return this.exit(99);
   }
 
-  doAddition(mode1, mode2) {
+  doAddition(mode1, mode2, mode3) {
     const value1 = this.getValue(mode1);
     const value2 = this.getValue(mode2);
-    const pos = this.getNextIntcode();
+    const pos = this.getPos(mode3);
 
     this.intcodes[pos] = value1 + value2;
   }
 
-  doMultiplication(mode1, mode2) {
+  doMultiplication(mode1, mode2, mode3) {
     const value1 = this.getValue(mode1);
     const value2 = this.getValue(mode2);
-    const pos = this.getNextIntcode();
+    const pos = this.getPos(mode3);
     this.intcodes[pos] = value1 * value2;
   }
 
-  handleInput() {
-    const pos = this.getNextIntcode();
+  handleInput(mode) {
+    const pos = this.getPos(mode);
     this.intcodes[pos] = this.input.shift();
   }
 
@@ -101,18 +104,18 @@ class IntcodeComputer {
     if (value1 === 0) this.instructionPointer = value2;
   }
 
-  lessThan(mode1, mode2) {
+  lessThan(mode1, mode2, mode3) {
     const value1 = this.getValue(mode1);
     const value2 = this.getValue(mode2);
-    const pos = this.getNextIntcode();
+    const pos = this.getPos(mode3);
     if (value1 < value2) this.intcodes[pos] = 1;
     else this.intcodes[pos] = 0;
   }
 
-  equals(mode1, mode2) {
+  equals(mode1, mode2, mode3) {
     const value1 = this.getValue(mode1);
     const value2 = this.getValue(mode2);
-    const pos = this.getNextIntcode();
+    const pos = this.getPos(mode3);
     if (value1 === value2) this.intcodes[pos] = 1;
     else this.intcodes[pos] = 0;
   }
