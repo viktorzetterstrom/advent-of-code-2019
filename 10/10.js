@@ -46,13 +46,60 @@ const findBestMiningLocation = (input) => {
   return bestLocation;
 };
 
+const createAsteroidAngleMap = (asteroidMap, centerX, centerY) => {
+  const asteroidAngles = new Map();
+  for (let y = 0; y < asteroidMap.length; y++) {
+    for (let x = 0; x < asteroidMap[0].length; x++) {
+      if (isAsteroid(asteroidMap[y][x]) && !(x === centerX && y === centerY)) {
+        const dx = x - centerX;
+        const dy = centerY - y;
+        let angle = Math.atan2(dx, dy) * (180 / Math.PI);
+        if (angle < 0) angle += 360;
+        if (asteroidAngles.has(angle)) {
+          asteroidAngles.set(angle, [...asteroidAngles.get(angle), [x, y]]);
+        } else {
+          asteroidAngles.set(angle, [[x, y]]);
+        }
+      }
+    }
+  }
+  return asteroidAngles;
+};
+
+const asteroidVaporization = (input, centerX, centerY) => {
+  const asteroidMap = input
+    .split('\n')
+    .map((row) => row.split(''));
+
+  const angleMap = createAsteroidAngleMap(asteroidMap, centerX, centerY);
+  const blastingOrder = [...angleMap.entries()]
+    .sort(([angleA], [angleB]) => angleA - angleB)
+    .map(([, asteroids]) => asteroids);
+
+  let blast = 0;
+  const blasted = [];
+  while (blastingOrder.length > 0) {
+    const i = blast % blastingOrder.length;
+    blasted.push(blastingOrder[i].pop());
+    if (blastingOrder[i].length === 0) {
+      blastingOrder.splice(i, 1);
+      blast--;
+    }
+    blast++;
+  }
+  return blasted[199];
+};
 
 if (process.env.NODE_ENV !== 'test') {
   const input = fs.readFileSync('./10/input.txt').toString();
 
-  console.log('part1', findBestMiningLocation(input));
+  const part1 = findBestMiningLocation(input);
+  console.log('part1', part1.asteroids);
+  const [x, y] = asteroidVaporization(input, ...part1.location);
+  console.log('part2', x * 100 + y);
 }
 
 module.exports = {
   findBestMiningLocation,
+  asteroidVaporization,
 };
