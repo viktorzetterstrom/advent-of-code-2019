@@ -21,6 +21,7 @@
         "no-param-reassign": "off",
         "no-constant-condition": "off",
         "no-plusplus": "off",
-        "no-confusing-arrow": "off"
+        "no-confusing-arrow": "off",
+        "no-else-return": "off"
     }
 }
