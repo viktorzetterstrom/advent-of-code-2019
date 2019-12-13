@@ -60,10 +60,55 @@ const moonSimulation = (input, steps = 1) => {
 };
 
 
+const applyGravityOnOneAxis = (moon, otherMoon) => {
+  moon.speed += applyGravityOnAxis(moon.pos, otherMoon.pos);
+  return moon;
+};
+
+const applyVelocityOneAxis = (axis) => axis.map((a) => {
+  a.pos += a.speed;
+  return a;
+});
+
+const calculateAxisCycleTime = (axis) => {
+  const initial = [...axis].map((a) => ({ ...a }));
+
+  let count = 0;
+  while (true) {
+    for (let i = 0; i < axis.length; i++) {
+      for (let j = 0; j < axis.length; j++) {
+        if (i !== j) {
+          axis[i] = applyGravityOnOneAxis(axis[i], axis[j]);
+        }
+      }
+    }
+    axis = applyVelocityOneAxis(axis);
+    count++;
+    if (JSON.stringify(initial) === JSON.stringify(axis)) break;
+  }
+  return count;
+};
+
+const moonSimulationPart2 = (input) => {
+  const moons = parseInput(input);
+
+  const xAxis = moons.map(({ x, dx }) => ({ pos: x, speed: dx }));
+  const yAxis = moons.map(({ y, dy }) => ({ pos: y, speed: dy }));
+  const zAxis = moons.map(({ z, dz }) => ({ pos: z, speed: dz }));
+
+  const xCycle = calculateAxisCycleTime(xAxis);
+  const yCycle = calculateAxisCycleTime(yAxis);
+  const zCycle = calculateAxisCycleTime(zAxis);
+
+  return [ xCycle, yCycle, zCycle ];
+};
+
 if (process.env.NODE_ENV !== 'test') {
   const input = fs.readFileSync('./12/input.txt').toString();
 
   console.log('part 1:', moonSimulation(input, 1000).energy);
+  console.log('part 2: cycles: ', moonSimulationPart2(input));
+  console.log('use least common multiple service to find answer');
 }
 
 module.exports = {
