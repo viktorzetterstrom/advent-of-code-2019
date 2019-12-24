@@ -31,8 +31,13 @@ const findFewestSteps = (intcodes) => {
         const newY = current.y + DIRECTIONS[direction].y;
         const newIntcodeComputer = current.intcodeComputer.clone();
         const out = newIntcodeComputer.run([direction]).out.pop();
-        if (out === 2) return console.log({ newX, newY }) || steps;
-        else if (out === 0) visited[positionHash(newX, newY)] = true;
+        if (out === 2) {
+          return {
+            x: newX,
+            y: newY,
+            steps,
+          };
+        } else if (out === 0) visited[positionHash(newX, newY)] = true;
         else {
           queue.push({
             x: newX,
