@@ -22,6 +22,7 @@
         "no-constant-condition": "off",
         "no-plusplus": "off",
         "no-confusing-arrow": "off",
-        "no-else-return": "off"
+        "no-else-return": "off",
+        "no-loop-func": "off"
     }
 }
